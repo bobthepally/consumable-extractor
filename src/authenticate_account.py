@@ -27,3 +27,8 @@ url = warcraftlogs.get_authorize_url(**params)
 # code = parse_qs(parsed_url.query)["code"][0]
 
 print(f"URL: {url}")
+
+code_file = open("../auth/user_code.json")
+code = json.load(code_file)["code"]
+
+session = warcraftlogs.get_auth_session(data={"code": code, "grant_type": "authorization_code", "redirect_uri": redirect_uri})
