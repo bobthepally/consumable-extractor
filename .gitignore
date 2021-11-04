@@ -1,0 +1,10 @@
+# Python
+env
+venv
+
+# Oauth2
+oauth2_client_info.json
+user_code
+
+# misc
+.vscode
