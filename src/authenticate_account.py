@@ -4,31 +4,41 @@ from urllib.parse import urlparse
 from urllib.parse import parse_qs
 from rauth import OAuth2Service
 
-oauth_file = open("../auth/oauth2_client_info.json")
-oauth_info = json.load(oauth_file)
+BASE_URL = "https://classic.warcraftlogs.com"
+TOKEN_URL = f"{BASE_URL}/oauth/token"
+API_URL = f"{BASE_URL}/api/v2/client"
 
-warcraftlogs = OAuth2Service(
-    client_id = oauth_info["client_id"],
-    client_secret = oauth_info["client_secret"],
-    name = "warcraftlogs",
-    authorize_url="https://classic.warcraftlogs.com/oauth/authorize",
-    access_token_url="https://classic.warcraftlogs.com/oauth/token",
-    base_url="https://classic.warcraftlogs.com/"
-)
+def main():
 
-redirect_uri = "http://localhost"
-params = {
-    'response_type': 'code',
-    'redirect_uri': redirect_uri
-}
+    oauth_file = open("../auth/oauth2_client_info.json")
+    oauth_info = json.load(oauth_file)
 
-url = warcraftlogs.get_authorize_url(**params)
-# parsed_url = urlparse(url)
-# code = parse_qs(parsed_url.query)["code"][0]
+    CLIENT_ID = oauth_info["client_id"]
+    CLIENT_SECRET = oauth_info["client_secret"]
 
-print(f"URL: {url}")
+    warcraftlogs = OAuth2Service(
+        client_id = CLIENT_ID,
+        client_secret = CLIENT_SECRET,
+        name = "warcraftlogs",
+        access_token_url=TOKEN_URL,
+        base_url=API_URL
+    )
 
-code_file = open("../auth/user_code.json")
-code = json.load(code_file)["code"]
+    data = {"grant_type": "client_credentials"}
 
-session = warcraftlogs.get_auth_session(data={"code": code, "grant_type": "authorization_code", "redirect_uri": redirect_uri})
+    session = warcraftlogs.get_auth_session(data=data, decoder=json.loads)
+
+    query = """query {
+        guildData {
+            guild(id: 490146) {
+                name
+            }
+        }
+    }
+    """
+
+    result = session.post(API_URL, json={'query': query})
+    print(result.status_code)
+    print(result.text)
+
+main()
