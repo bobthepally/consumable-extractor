@@ -1,7 +1,5 @@
 import json
 
-from urllib.parse import urlparse
-from urllib.parse import parse_qs
 from rauth import OAuth2Service
 
 BASE_URL = "https://classic.warcraftlogs.com"
@@ -28,14 +26,19 @@ def main():
 
     session = warcraftlogs.get_auth_session(data=data, decoder=json.loads)
 
+    guild_id = "490146" # Bad on Purpose
+
     query = """query {
-        guildData {
-            guild(id: 490146) {
-                name
+        reportData {
+            reports(guildID: %s, limit: 10) {
+                data {
+                    code
+                    endTime
+                }
             }
         }
     }
-    """
+    """ % (guild_id)
 
     result = session.post(API_URL, json={'query': query})
     print(result.status_code)
