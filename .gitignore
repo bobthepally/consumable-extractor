@@ -3,8 +3,7 @@ env
 venv
 
 # Oauth2
-oauth2_client_info.json
-user_code
+auth
 
 # misc
 .vscode
