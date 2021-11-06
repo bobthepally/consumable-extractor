@@ -8,7 +8,7 @@ API_URL = f"{BASE_URL}/api/v2/client"
 
 def main():
 
-    oauth_file = open("../auth/oauth2_client_info.json")
+    oauth_file = open("auth/oauth2_client_info.json")
     oauth_info = json.load(oauth_file)
 
     CLIENT_ID = oauth_info["client_id"]
@@ -30,10 +30,15 @@ def main():
 
     query = """query {
         reportData {
-            reports(guildID: %s, limit: 10) {
+            reports(guildID: %s, limit: 1) {
                 data {
                     code
                     endTime
+                    owner {
+                        name
+                    }
+                    
+                    table(dataType: Buffs, startTime: 0, endTime: 1635916495521, hostilityType: Friendlies, killType: Encounters, viewBy: Target)
                 }
             }
         }
