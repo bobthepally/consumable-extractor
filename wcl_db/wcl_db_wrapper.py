@@ -34,4 +34,6 @@ class WCL:
     def query(self, query_string):
         
         result = self.session.post(self.api_url, json={'query': query_string})
-        return result
+        result_dict = json.loads(result.text)
+
+        return (result_dict, result.status_code)
