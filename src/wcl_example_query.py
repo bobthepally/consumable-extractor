@@ -8,7 +8,7 @@ API_URL = f"{BASE_URL}/api/v2/client"
 
 def main():
 
-    oauth_file = open("auth/oauth2_client_info.json")
+    oauth_file = open("auth/oauth2.json")
     oauth_info = json.load(oauth_file)
 
     CLIENT_ID = oauth_info["client_id"]
